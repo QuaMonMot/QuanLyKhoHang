@@ -1,0 +1,74 @@
+﻿@model Warehouse.Web.Models.LoginDTO
+
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-header text-center">
+                    <h3>Đăng nhập</h3>
+                </div>
+
+                <div class="card-body">
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+                            @ViewBag.Error
+                        </div>
+                    }
+
+                    <form asp-action="Login" method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Tài khoản
+                            </label>
+
+                            <input asp-for="Username"
+                                   class="form-control" />
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Mật khẩu
+                            </label>
+
+                            <input asp-for="Password"
+                                   type="password"
+                                   class="form-control" />
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+                            Đăng nhập
+                        </button>
+
+                    </form>
+
+                    <div class="text-center mt-3">
+
+                        <a asp-action="Register">
+                            Chưa có tài khoản?
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

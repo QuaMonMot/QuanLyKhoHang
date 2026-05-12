@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Warehouse.API/Warehouse.API.csproj" />
+  <Project Path="Warehouse.BLL/Warehouse.BLL.csproj" />
+  <Project Path="Warehouse.DAL/Warehouse.DAL.csproj" />
+  <Project Path="Warehouse.Models/Warehouse.Models.csproj" />
+  <Project Path="Warehouse.Web/Warehouse.Web.csproj" Id="49923fd0-4fb7-4eab-b6ec-f341f43d4265" />
+</Solution>

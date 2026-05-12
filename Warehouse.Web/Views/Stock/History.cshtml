@@ -1,0 +1,73 @@
+﻿@model List<Warehouse.Web.Models.StockHistoryViewModel>
+
+@{
+    ViewData["Title"] = "Lịch sử kho";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+        <h2>Lịch sử nhập xuất kho</h2>
+
+        <a asp-controller="Stock"
+           asp-action="Index"
+           class="btn btn-secondary">
+            Quay lại
+        </a>
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>SKU</th>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Loại</th>
+                <th>Ghi chú</th>
+                <th>Ngày</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.LogId</td>
+
+                    <td>@item.SKU</td>
+
+                    <td>@item.ProductName</td>
+
+                    <td>@item.Quantity</td>
+
+                    <td>
+                        @if (item.Type == "IMPORT")
+                        {
+                            <span class="badge bg-success">
+                                Nhập kho
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">
+                                Xuất kho
+                            </span>
+                        }
+                    </td>
+
+                    <td>@item.Note</td>
+
+                    <td>
+                        @item.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

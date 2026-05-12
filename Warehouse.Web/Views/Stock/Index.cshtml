@@ -1,0 +1,71 @@
+@model IEnumerable<Warehouse.Web.Models.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Kho hàng";
+}
+
+<div class="page-title d-flex justify-content-between align-items-center">
+    <span><i class="fa-solid fa-warehouse me-2 text-primary"></i> Quản lý kho hàng</span>
+    <div>
+        <a asp-controller="Stock" asp-action="History" class="btn btn-outline-secondary me-2">
+            <i class="fa-solid fa-clock-rotate-left me-1"></i> Lịch sử
+        </a>
+        <a asp-controller="Stock" asp-action="LowStock" class="btn btn-warning">
+            <i class="fa-solid fa-triangle-exclamation me-1"></i> Tồn kho thấp
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive table-wrapper">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th width="15%">SKU</th>
+                        <th width="30%">Tên sản phẩm</th>
+                        <th width="15%" class="text-center">Tồn kho</th>
+                        <th width="10%" class="text-center">Tối thiểu</th>
+                        <th width="10%">Giá</th>
+                        <th width="20%" class="text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><span class="badge bg-light text-dark border">@item.SKU</span></td>
+                            <td class="font-weight-bold text-main">@item.ProductName</td>
+                            <td class="text-center">
+                                @if (item.Quantity <= item.MinStock)
+                                {
+                                    <span class="badge bg-danger rounded-pill px-3 py-2">
+                                        <i class="fa-solid fa-arrow-trend-down me-1"></i> @item.Quantity
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success rounded-pill px-3 py-2">
+                                        @item.Quantity
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-center text-muted">@item.MinStock</td>
+                            <td class="text-success fw-bold">$@item.Price</td>
+                            <td class="text-center">
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <a asp-controller="Stock" asp-action="Import" asp-route-productId="@item.ProductId" class="btn btn-sm btn-outline-success">
+                                        <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> Nhập
+                                    </a>
+                                    <a asp-controller="Stock" asp-action="Export" asp-route-productId="@item.ProductId" class="btn btn-sm btn-outline-danger">
+                                        <i class="fa-solid fa-arrow-right-from-bracket me-1"></i> Xuất
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

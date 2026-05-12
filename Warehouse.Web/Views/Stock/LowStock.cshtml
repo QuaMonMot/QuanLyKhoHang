@@ -1,0 +1,62 @@
+﻿@model List<Warehouse.Web.Models.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Tồn kho thấp";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>Sản phẩm tồn kho thấp</h2>
+
+        <a asp-controller="Stock"
+           asp-action="Index"
+           class="btn btn-secondary">
+            Quay lại
+        </a>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-danger">
+
+            <tr>
+                <th>ID</th>
+                <th>SKU</th>
+                <th>Tên sản phẩm</th>
+                <th>Tồn kho</th>
+                <th>Tồn tối thiểu</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>@item.ProductId</td>
+
+                    <td>@item.SKU</td>
+
+                    <td>@item.ProductName</td>
+
+                    <td>
+                        <span class="text-danger fw-bold">
+                            @item.Quantity
+                        </span>
+                    </td>
+
+                    <td>@item.MinStock</td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Warehouse.Web.Models.StockReportViewModel>
+
+@{
+    ViewData["Title"] = "Báo cáo kho";
+}
+
+<div class="container-fluid pt-4 px-4">
+
+    <div class="bg-light rounded p-4">
+
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h4 class="mb-0">Báo cáo nhập xuất kho</h4>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Tên sản phẩm</th>
+                        <th>Tổng nhập</th>
+                        <th>Tổng xuất</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ProductName</td>
+                            <td>@item.TotalImport</td>
+                            <td>@item.TotalExport</td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
