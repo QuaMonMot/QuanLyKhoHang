@@ -19,7 +19,9 @@
         <!-- Sidebar -->
         <aside id="sidebar-wrapper">
             <div class="sidebar-heading">
-                <i class="fa-solid fa-boxes-stacked text-primary"></i> Warehouse
+                <a asp-controller="Product" asp-action="Index" class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Product" ? "active" : "")">
+                    <i class="fa-solid fa-boxes-stacked text-primary"></i> Warehouse
+                </a>          
             </div>
             <div class="list-group list-group-flush mt-3">
                 <a asp-controller="Dashboard" asp-action="Index" class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "active" : "")">
