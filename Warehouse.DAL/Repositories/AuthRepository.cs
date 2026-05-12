@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Warehouse.DAL.DbContext;
 using Warehouse.DAL.Interfaces;
@@ -99,6 +99,25 @@ namespace Warehouse.DAL.Repositories
 
                 conn.Open();
 
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void UpdateProfile(int userId, string username, string password)
+        {
+            using (SqlConnection conn = _factory.CreateConnection())
+            {
+                SqlCommand cmd = new SqlCommand(
+                    "UPDATE Users SET Username = @Username, Password = @Password WHERE UserId = @UserId",
+                    conn
+                );
+
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@UserId", userId);
+                cmd.Parameters.AddWithValue("@Username", username);
+                cmd.Parameters.AddWithValue("@Password", password);
+
+                conn.Open();
                 cmd.ExecuteNonQuery();
             }
         }

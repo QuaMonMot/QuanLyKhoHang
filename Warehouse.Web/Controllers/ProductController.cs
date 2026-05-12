@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
 using Warehouse.Web.Models;
@@ -27,37 +27,55 @@ namespace Warehouse.Web.Controllers
         )
         {
             int pageSize = 6;
+            var client = _httpClientFactory.CreateClient();
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            var client =
-                _httpClientFactory.CreateClient();
+            // Get all products
+            var productsResponse = await client.GetAsync(_configuration["ApiUrl"] + "Product");
+            var productsJson = await productsResponse.Content.ReadAsStringAsync();
+            var products = JsonSerializer.Deserialize<List<ProductViewModel>>(productsJson, options) ?? new List<ProductViewModel>();
 
-            string apiUrl =
-                _configuration["ApiUrl"]
-                + $"Stock/paging?page={page}&pageSize={pageSize}";
-
-            var response =
-                await client.GetAsync(apiUrl);
-
-            var json =
-                await response.Content
-                .ReadAsStringAsync();
-
-            var products =
-                JsonSerializer.Deserialize
-                <List<ProductViewModel>>
-                (
-                    json,
-                    new JsonSerializerOptions
+            // Get all suppliers to map names
+            var suppliersResponse = await client.GetAsync(_configuration["ApiUrl"] + "Supplier");
+            if (suppliersResponse.IsSuccessStatusCode)
+            {
+                var suppliersJson = await suppliersResponse.Content.ReadAsStringAsync();
+                var suppliers = JsonSerializer.Deserialize<List<SupplierViewModel>>(suppliersJson, options) ?? new List<SupplierViewModel>();
+                var supplierDict = suppliers.ToDictionary(s => s.SupplierId, s => s.SupplierName);
+                
+                foreach(var p in products)
+                {
+                    if (supplierDict.TryGetValue(p.SupplierId, out var sName))
                     {
-                        PropertyNameCaseInsensitive = true
+                        p.SupplierName = sName;
                     }
-                );
+                }
+            }
+
+            // Search filtering
+            if (!string.IsNullOrEmpty(search))
+            {
+                search = search.Trim();
+                products = products.Where(p => 
+                    (p.ProductName != null && p.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
+                    (p.SKU != null && p.SKU.Contains(search, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
+            }
+
+            // Pagination
+            int totalItems = products.Count;
+            int totalPage = (int)Math.Ceiling((double)totalItems / pageSize);
+            
+            if (page < 1) page = 1;
+            if (page > totalPage && totalPage > 0) page = totalPage;
+
+            var pagedProducts = products.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             ViewBag.CurrentPage = page;
+            ViewBag.TotalPage = totalPage;
+            ViewBag.Search = search;
 
-            ViewBag.TotalPage = 5;
-
-            return View(products);
+            return View(pagedProducts);
         }
         // =========================
         // CREATE PAGE

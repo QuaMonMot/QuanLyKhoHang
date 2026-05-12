@@ -1,0 +1,55 @@
+@model Warehouse.Web.Models.SupplierViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh Sửa Nhà Cung Cấp";
+}
+
+<div class="page-title">
+    <span><i class="fa-solid fa-truck-field me-2 text-primary"></i> Chỉnh Sửa Nhà Cung Cấp</span>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fa-solid fa-circle-exclamation me-2"></i> @ViewBag.Error
+            </div>
+        }
+
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="SupplierId" />
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="SupplierCode" class="form-label font-weight-bold">Mã NCC <span class="text-danger">*</span></label>
+                    <input asp-for="SupplierCode" class="form-control" placeholder="Ví dụ: NCC001" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="SupplierName" class="form-label font-weight-bold">Tên Nhà Cung Cấp <span class="text-danger">*</span></label>
+                    <input asp-for="SupplierName" class="form-control" placeholder="Nhập tên nhà cung cấp" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Phone" class="form-label font-weight-bold">Số Điện Thoại</label>
+                    <input asp-for="Phone" class="form-control" placeholder="Nhập số điện thoại" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Address" class="form-label font-weight-bold">Địa Chỉ</label>
+                    <input asp-for="Address" class="form-control" placeholder="Nhập địa chỉ" />
+                </div>
+            </div>
+
+            <hr class="my-4">
+            
+            <div class="d-flex justify-content-end gap-2">
+                <a asp-action="Index" class="btn btn-light border">Hủy bỏ</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-floppy-disk me-1"></i> Cập nhật
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -83,7 +83,7 @@
     <nav class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)">
+                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-search="@ViewBag.Search">
                     <i class="fa-solid fa-chevron-left"></i> Trước
                 </a>
             </li>
@@ -91,12 +91,12 @@
             @for (int i = 1; i <= totalPage; i++)
             {
                 <li class="page-item @(i == currentPage ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-search="@ViewBag.Search">@i</a>
                 </li>
             }
 
             <li class="page-item @(currentPage == totalPage ? "disabled" : "")">
-                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">
+                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-search="@ViewBag.Search">
                     Sau <i class="fa-solid fa-chevron-right"></i>
                 </a>
             </li>

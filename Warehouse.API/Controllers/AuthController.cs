@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Warehouse.API.DTOs.Request;
 using Warehouse.BLL.Interfaces;
 using Warehouse.Models;
@@ -82,6 +82,33 @@ namespace Warehouse.API.Controllers
                 return BadRequest(
                     ex.Message
                 );
+            }
+        }
+
+        // =========================
+        // UPDATE PROFILE
+        // =========================
+        [HttpPut("profile/{id}")]
+        [EndpointSummary("Cập nhật hồ sơ")]
+        public IActionResult UpdateProfile(
+            int id,
+            [FromBody] UpdateProfileRequest dto
+        )
+        {
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest("ID không hợp lệ");
+                }
+
+                _authService.UpdateProfile(id, dto.Username, dto.Password);
+
+                return Ok("Cập nhật hồ sơ thành công");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

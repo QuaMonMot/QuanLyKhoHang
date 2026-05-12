@@ -1,4 +1,4 @@
-﻿using Warehouse.Models;
+using Warehouse.Models;
 
 namespace Warehouse.BLL.Interfaces
 {
@@ -7,5 +7,6 @@ namespace Warehouse.BLL.Interfaces
         User? Login(string username, string password);
 
         void Register(User user);
+        void UpdateProfile(int userId, string username, string password);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Warehouse.BLL.Interfaces;
+using Warehouse.BLL.Interfaces;
 using Warehouse.DAL.Interfaces;
 using Warehouse.Models;
 
@@ -35,6 +35,14 @@ namespace Warehouse.BLL.Services
         public void Register(User user)
         {
             _authRepository.Register(user);
+        }
+
+        // =========================
+        // UPDATE PROFILE
+        // =========================
+        public void UpdateProfile(int userId, string username, string password)
+        {
+            _authRepository.UpdateProfile(userId, username, password);
         }
     }
 }
