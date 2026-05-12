@@ -1,0 +1,90 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="page-title">
+    <span><i class="fa-solid fa-chart-pie me-2 text-primary"></i> Tổng quan</span>
+</div>
+
+<div class="row">
+    <div class="col-xl-8 col-lg-10 col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-chart-column me-2"></i> Thống kê nhập xuất kho</span>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Tùy chọn
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#">Xuất báo cáo</a></li>
+                        <li><a class="dropdown-item" href="#">Làm mới</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <canvas id="stockChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const data = @Html.Raw(ViewBag.ChartData ?? "[]");
+
+        if (data.length > 0) {
+            const labels = data.map(x => x.productName);
+            const importData = data.map(x => x.totalImport);
+            const exportData = data.map(x => x.totalExport);
+
+            const ctx = document.getElementById('stockChart');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Nhập kho',
+                            data: importData,
+                            backgroundColor: 'rgba(67, 97, 238, 0.7)',
+                            borderColor: 'rgba(67, 97, 238, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Xuất kho',
+                            data: exportData,
+                            backgroundColor: 'rgba(247, 37, 133, 0.7)',
+                            borderColor: 'rgba(247, 37, 133, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                borderDash: [2, 4],
+                                color: "rgba(0,0,0,0.05)"
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+}

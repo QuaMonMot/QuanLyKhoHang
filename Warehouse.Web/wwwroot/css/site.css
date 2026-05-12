@@ -1,0 +1,287 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #4361ee;
+  --secondary-color: #3f37c9;
+  --success-color: #4cc9f0;
+  --danger-color: #f72585;
+  --warning-color: #f8961e;
+  --info-color: #4895ef;
+  
+  --bg-color: #f8f9fa;
+  --sidebar-bg: #1a1b26;
+  --sidebar-text: #a9b1d6;
+  --sidebar-text-hover: #ffffff;
+  --sidebar-active-bg: rgba(255, 255, 255, 0.1);
+  
+  --card-bg: #ffffff;
+  --text-main: #2b2d42;
+  --text-muted: #8d99ae;
+  
+  --border-color: #e9ecef;
+  --border-radius: 12px;
+  --border-radius-sm: 8px;
+  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --box-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --transition-speed: 0.3s;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Layout: Sidebar & Topbar --- */
+#wrapper {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+#sidebar-wrapper {
+  min-height: 100vh;
+  width: 250px;
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  transition: margin var(--transition-speed) ease-out;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  flex-shrink: 0;
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: 1.5rem 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 10px;
+}
+
+#sidebar-wrapper .list-group-item {
+  background: transparent;
+  color: var(--sidebar-text);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-weight: 500;
+  transition: all var(--transition-speed);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 12px;
+  border-radius: 8px;
+}
+
+#sidebar-wrapper .list-group-item i {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+}
+
+#sidebar-wrapper .list-group-item:hover,
+#sidebar-wrapper .list-group-item.active {
+  background-color: var(--sidebar-active-bg);
+  color: var(--sidebar-text-hover);
+}
+
+#sidebar-wrapper .list-group-item.active {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
+}
+
+#page-content-wrapper {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.top-navbar {
+  background-color: var(--card-bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  padding: 0.8rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.navbar-toggler-icon {
+  background-image: none !important;
+}
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.toggle-btn:hover {
+  color: var(--primary-color);
+}
+
+.main-content {
+  padding: 2rem;
+  flex-grow: 1;
+}
+
+/* --- Components --- */
+/* Cards */
+.card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  background-color: var(--card-bg);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  margin-bottom: 1.5rem;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow-hover);
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.25rem 1.5rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Buttons */
+.btn {
+  border-radius: var(--border-radius-sm);
+  padding: 0.5rem 1.25rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border: none;
+  color: white;
+  box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  box-shadow: 0 6px 15px rgba(67, 97, 238, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Tables */
+.table-wrapper {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 0;
+  color: var(--text-main);
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table th {
+  border-top: none;
+  border-bottom: 2px solid var(--border-color);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  padding: 1rem;
+}
+
+.table td {
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Form Controls */
+.form-control, .form-select {
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+  padding: 0.7rem 1rem;
+  transition: all 0.2s;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+}
+
+.input-group-text {
+  background-color: transparent;
+  border-color: var(--border-color);
+}
+
+/* Utilities */
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.badge {
+  padding: 0.4em 0.8em;
+  border-radius: 30px;
+  font-weight: 500;
+}
+
+/* Toggled Sidebar */
+@media (max-width: 768px) {
+  #sidebar-wrapper {
+    margin-left: -250px;
+  }
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+  }
+}

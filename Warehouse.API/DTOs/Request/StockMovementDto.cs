@@ -1,0 +1,4 @@
+﻿namespace Warehouse.API.Controllers
+{
+
+}

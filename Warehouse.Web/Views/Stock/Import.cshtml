@@ -1,0 +1,64 @@
+﻿@model Warehouse.Web.Models.ImportStockDTO
+
+@{
+    ViewData["Title"] = "Nhập kho";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+            <h3>Nhập kho</h3>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Import" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Product ID
+                    </label>
+
+                    <input asp-for="ProductId"
+                           class="form-control"
+                           readonly />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Số lượng
+                    </label>
+
+                    <input asp-for="Quantity"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Ghi chú
+                    </label>
+
+                    <textarea asp-for="Note"
+                              class="form-control">
+                    </textarea>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success">
+                    Nhập kho
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Quay lại
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

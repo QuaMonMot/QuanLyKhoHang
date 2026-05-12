@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.7" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Warehouse.BLL\Warehouse.BLL.csproj" />
+    <ProjectReference Include="..\Warehouse.DAL\Warehouse.DAL.csproj" />
+    <ProjectReference Include="..\Warehouse.Models\Warehouse.Models.csproj" />
+  </ItemGroup>
+
+</Project>
