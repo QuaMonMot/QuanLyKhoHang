@@ -4,19 +4,18 @@
     ViewData["Title"] = "Hồ sơ cá nhân";
 }
 
-<div class="page-title">
-    <span><i class="fa-solid fa-user me-2 text-primary"></i> Hồ sơ cá nhân</span>
+<div class="page-title mb-4">
+    <span><i class="fa-solid fa-user-gear me-2 text-primary"></i> Thiết lập hồ sơ</span>
 </div>
 
-<div class="row justify-content-center mt-4">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
-                <h4 class="card-title text-center mb-4">Cập nhật thông tin</h4>
-                
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-5">
+
                 @if (ViewBag.Success != null)
                 {
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
                         <i class="fa-solid fa-circle-check me-2"></i> @ViewBag.Success
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
@@ -24,31 +23,90 @@
 
                 @if (ViewBag.Error != null)
                 {
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
                         <i class="fa-solid fa-circle-exclamation me-2"></i> @ViewBag.Error
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 }
 
                 <form asp-action="Profile" method="post">
-                    <div class="mb-3">
-                        <label asp-for="Username" class="form-label font-weight-bold">Tên đăng nhập mới</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                            <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập mới" required />
+                    <!-- PHẦN 1: THÔNG TIN CƠ BẢN -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-primary border-bottom pb-2 mb-3">
+                                <i class="fa-solid fa-address-card me-2"></i>Thông tin cơ bản
+                            </h5>
                         </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label asp-for="Password" class="form-label font-weight-bold">Mật khẩu mới</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                            <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu mới" required />
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FullName" class="form-label fw-bold">Họ và tên</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-signature"></i></span>
+                                <input asp-for="FullName" class="form-control" placeholder="Ví dụ: Nguyễn Văn A" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DateOfBirth" class="form-label fw-bold">Ngày sinh</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-calendar-days"></i></span>
+                                <input asp-for="DateOfBirth" type="date" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Gender" class="form-label fw-bold">Giới tính</label>
+                            <select asp-for="Gender" class="form-select">
+                                <option value="">-- Chọn giới tính --</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary py-2">
+                    <!-- PHẦN 2: LIÊN HỆ & TÀI KHOẢN -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-primary border-bottom pb-2 mb-3">
+                                <i class="fa-solid fa-envelopes-bulk me-2"></i>Liên hệ & Tài khoản
+                            </h5>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Email" class="form-label fw-bold">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-envelope"></i></span>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="email@vi-du.com" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="PhoneNumber" class="form-label fw-bold">Số điện thoại</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-phone"></i></span>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="09xx xxx xxx" />
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label asp-for="Address" class="form-label fw-bold">Địa chỉ</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-location-dot"></i></span>
+                                <input asp-for="Address" class="form-control" placeholder="Số nhà, tên đường, phường/xã..." />
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Username" class="form-label fw-bold text-muted">Tên đăng nhập (ID)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-user-lock"></i></span>
+                                <input asp-for="Username" class="form-control bg-light" readonly />
+                            </div>
+                            <small class="text-muted">Tên đăng nhập không thể thay đổi.</small>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-end">
+                        <button type="reset" class="btn btn-outline-secondary me-2 px-4">
+                            <i class="fa-solid fa-arrow-rotate-left me-1"></i> Hoàn tác
+                        </button>
+                        <button type="submit" class="btn btn-primary px-5 fw-bold">
                             <i class="fa-solid fa-floppy-disk me-1"></i> Lưu thay đổi
                         </button>
                     </div>

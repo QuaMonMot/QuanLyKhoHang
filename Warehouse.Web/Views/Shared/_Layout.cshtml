@@ -21,7 +21,7 @@
             <div class="sidebar-heading">
                 <a asp-controller="Product" asp-action="Index" class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Product" ? "active" : "")">
                     <i class="fa-solid fa-boxes-stacked text-primary"></i> Warehouse
-                </a>          
+                </a>
             </div>
             <div class="list-group list-group-flush mt-3">
                 <a asp-controller="Dashboard" asp-action="Index" class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "active" : "")">
@@ -52,11 +52,24 @@
                 <div class="d-flex align-items-center gap-3">
                     <div class="dropdown">
                         @{
+                            // LẤY DỮ LIỆU TỪ SESSION
                             var username = Context.Session.GetString("USERNAME");
-                            var displayName = string.IsNullOrEmpty(username) ? "Tài khoản" : username;
+                            var fullName = Context.Session.GetString("FULLNAME");
+
+                            // LOGIC HIỂN THỊ: Ưu tiên FullName -> Username -> Tài khoản
+                            var displayName = "Tài khoản";
+                            if (!string.IsNullOrEmpty(fullName))
+                            {
+                                displayName = fullName;
+                            }
+                            else if (!string.IsNullOrEmpty(username))
+                            {
+                                displayName = username;
+                            }
                         }
                         <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://ui-avatars.com/api/?name=@(displayName)&background=4361ee&color=fff" alt="User" width="32" height="32" class="rounded-circle me-2">
+                            @* Avatar tự động theo tên hiển thị *@
+                            <img src="https://ui-avatars.com/api/?name=@(Uri.EscapeDataString(displayName))&background=4361ee&color=fff" alt="User" width="32" height="32" class="rounded-circle me-2">
                             <strong>@displayName</strong>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownUser">
@@ -66,7 +79,7 @@
                             }
                             else
                             {
-                                <li><a class="dropdown-item" asp-controller="Auth" asp-action="Profile"><i class="fa-solid fa-user me-2"></i> Hồ sơ</a></li>
+                                <li><a class="dropdown-item" asp-controller="Auth" asp-action="Profile"><i class="fa-solid fa-user me-2"></i> Hồ sơ cá nhân</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" asp-controller="Auth" asp-action="Logout"><i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất</a></li>
                             }
@@ -79,7 +92,7 @@
             <main class="main-content">
                 @RenderBody()
             </main>
-            
+
             <footer class="footer bg-white text-muted text-center py-3 border-top mt-auto flex-shrink-0" style="position: relative; z-index: 10;">
                 <div class="container-fluid">
                     &copy; 2026 - Warehouse.Web - Thiết kế hiện đại

@@ -1,6 +1,12 @@
-namespace Warehouse.API.DTOs.Request
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Warehouse.Models
 {
-    public class UpdateProfileRequest
+    public class UpdateProfileDTO
     {
         public string? Username { get; set; }
         public string? FullName { get; set; }

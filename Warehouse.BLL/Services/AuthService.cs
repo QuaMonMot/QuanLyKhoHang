@@ -1,4 +1,4 @@
-using Warehouse.BLL.Interfaces;
+﻿using Warehouse.BLL.Interfaces;
 using Warehouse.DAL.Interfaces;
 using Warehouse.Models;
 
@@ -40,9 +40,13 @@ namespace Warehouse.BLL.Services
         // =========================
         // UPDATE PROFILE
         // =========================
-        public void UpdateProfile(int userId, string username, string password)
+        public void UpdateProfile(int userId, UpdateProfileDTO dto)
         {
-            _authRepository.UpdateProfile(userId, username, password);
+            _authRepository.UpdateProfile(userId, dto);
+        }
+        public User? GetById(int id)
+        {
+            return _authRepository.GetById(id);
         }
     }
 }

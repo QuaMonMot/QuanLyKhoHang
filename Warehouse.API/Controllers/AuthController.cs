@@ -85,15 +85,27 @@ namespace Warehouse.API.Controllers
             }
         }
 
-        // =========================
-        // UPDATE PROFILE
-        // =========================
+        [HttpGet("profile/{id}")]
+        public IActionResult GetProfile(int id)
+        {
+            var user = _authService.GetById(id);
+            if (user == null) return NotFound("Không tìm thấy người dùng");
+
+            // Lấy tất cả thông tin từ đối tượng user trả về từ DB
+            return Ok(new UpdateProfileDTO
+            {
+                Username = user.Username,
+                FullName = user.FullName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                Address = user.Address,
+                Gender = user.Gender,
+                DateOfBirth = user.DateOfBirth
+            });
+        }
         [HttpPut("profile/{id}")]
         [EndpointSummary("Cập nhật hồ sơ")]
-        public IActionResult UpdateProfile(
-            int id,
-            [FromBody] UpdateProfileRequest dto
-        )
+        public IActionResult UpdateProfile(int id, [FromBody] UpdateProfileDTO dto)
         {
             try
             {
@@ -102,13 +114,15 @@ namespace Warehouse.API.Controllers
                     return BadRequest("ID không hợp lệ");
                 }
 
-                _authService.UpdateProfile(id, dto.Username, dto.Password);
+                // Truyền cả đối tượng dto vào để Service xử lý trọn gói các cột mới
+                _authService.UpdateProfile(id, dto);
 
                 return Ok("Cập nhật hồ sơ thành công");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                // Trả về lỗi chi tiết nếu có vấn đề trong quá trình lưu DB
+                return BadRequest("Lỗi khi cập nhật: " + ex.Message);
             }
         }
     }
