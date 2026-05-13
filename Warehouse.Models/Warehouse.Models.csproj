@@ -12,4 +12,12 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\ASUS\Source\Repos\QuanLyKhoHang\Warehouse.Models\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\ASUS\Source\Repos\QuanLyKhoHang\Warehouse.Models\.editorconfig" />
+  </ItemGroup>
+
 </Project>
