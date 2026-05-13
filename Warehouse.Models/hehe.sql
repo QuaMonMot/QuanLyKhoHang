@@ -58,8 +58,8 @@ CREATE TABLE Users
 GO
 
 INSERT INTO Users VALUES
-('admin','123','1')
-('staff','123','0')
+('admin','123','1'),
+	('staff','123','0'),
 ('user','123','0')
 GO
 
