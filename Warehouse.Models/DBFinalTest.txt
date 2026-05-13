@@ -3,7 +3,9 @@ GO
 
 IF DB_ID('WarehouseManagement') IS NOT NULL
 BEGIN
-    ALTER DATABASE WarehouseManagement SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+    ALTER DATABASE WarehouseManagement 
+    SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+
     DROP DATABASE WarehouseManagement
 END
 GO
@@ -21,19 +23,24 @@ DROP PROCEDURE IF EXISTS sp_AddSupplier
 DROP PROCEDURE IF EXISTS sp_GetSuppliers
 DROP PROCEDURE IF EXISTS sp_UpdateSupplier
 DROP PROCEDURE IF EXISTS sp_DeleteSupplier
+
 DROP PROCEDURE IF EXISTS sp_AddProduct
 DROP PROCEDURE IF EXISTS sp_GetProducts
 DROP PROCEDURE IF EXISTS sp_UpdateProduct
 DROP PROCEDURE IF EXISTS sp_DeleteProduct
+
 DROP PROCEDURE IF EXISTS sp_ImportStock
 DROP PROCEDURE IF EXISTS sp_ExportStock
+
 DROP PROCEDURE IF EXISTS sp_LowStockReport
 DROP PROCEDURE IF EXISTS sp_InventoryHistory
 DROP PROCEDURE IF EXISTS sp_StockDashboard
 DROP PROCEDURE IF EXISTS sp_SearchProducts
 DROP PROCEDURE IF EXISTS sp_GetProductsPaging
 DROP PROCEDURE IF EXISTS sp_StockReport
+
 DROP PROCEDURE IF EXISTS sp_Login
+DROP PROCEDURE IF EXISTS sp_Register
 GO
 
 -- =============================================
@@ -51,16 +58,44 @@ GO
 CREATE TABLE Users
 (
     UserId INT PRIMARY KEY IDENTITY(1,1),
+
     Username NVARCHAR(100) UNIQUE NOT NULL,
     Password NVARCHAR(100) NOT NULL,
-    Role NVARCHAR(50) NOT NULL
+    Role NVARCHAR(50) NOT NULL,
+
+    FullName NVARCHAR(100),
+    Email VARCHAR(100),
+    PhoneNumber VARCHAR(15),
+    Address NVARCHAR(255),
+    AvatarUrl VARCHAR(255),
+    Gender NVARCHAR(10),
+    DateOfBirth DATE,
+
+    is_deleted BIT DEFAULT 0
 )
 GO
 
-INSERT INTO Users VALUES
-('admin','123','1')
-('staff','123','0')
+INSERT INTO Users
+(
+    Username,
+    Password,
+    Role
+)
+VALUES
+('admin','123','1'),
+('staff','123','0'),
 ('user','123','0')
+GO
+
+UPDATE Users
+SET
+    FullName = N'Người Dùng Thử',
+    Email = 'user@example.com',
+    PhoneNumber = '0987654321',
+    Address = N'123 Đường ABC, TP. Hồ Chí Minh',
+    Gender = N'Nam',
+    DateOfBirth = '2000-01-01'
+WHERE UserId = 3
 GO
 
 -- =============================================
@@ -69,10 +104,12 @@ GO
 CREATE TABLE Suppliers
 (
     SupplierId INT PRIMARY KEY IDENTITY(1,1),
+
     SupplierCode NVARCHAR(50) UNIQUE,
     SupplierName NVARCHAR(100) NOT NULL,
     Phone VARCHAR(15),
     Address NVARCHAR(255),
+
     CreatedAt DATETIME DEFAULT GETDATE()
 )
 GO
@@ -83,12 +120,16 @@ GO
 CREATE TABLE Products
 (
     ProductId INT PRIMARY KEY IDENTITY(1,1),
+
     SKU NVARCHAR(50) UNIQUE,
     ProductName NVARCHAR(150) NOT NULL,
-    Quantity INT DEFAULT 0 CHECK(Quantity>=0),
-    Price DECIMAL(18,2) CHECK(Price>=0),
+
+    Quantity INT DEFAULT 0 CHECK(Quantity >= 0),
+    Price DECIMAL(18,2) CHECK(Price >= 0),
     MinStock INT DEFAULT 10,
+
     SupplierId INT,
+
     CreatedAt DATETIME DEFAULT GETDATE(),
 
     CONSTRAINT FK_Product_Supplier
@@ -103,10 +144,13 @@ GO
 CREATE TABLE StockLogs
 (
     LogId INT PRIMARY KEY IDENTITY(1,1),
+
     ProductId INT NOT NULL,
     Quantity INT NOT NULL,
+
     Type NVARCHAR(20),
     Note NVARCHAR(255),
+
     CreatedAt DATETIME DEFAULT GETDATE(),
 
     CONSTRAINT FK_Stock_Product
@@ -116,226 +160,27 @@ CREATE TABLE StockLogs
 GO
 
 -- =============================================
--- SAMPLE SUPPLIERS
--- =============================================
-INSERT INTO Suppliers VALUES
-('SUP-001',N'Dell Supplier','0900000001',N'HCM',GETDATE()),
-('SUP-002',N'Asus Supplier','0900000002',N'Hà Nội',GETDATE()),
-('SUP-003',N'HP Supplier','0900000003',N'Đà Nẵng',GETDATE())
-GO
-
--- =============================================
--- SAMPLE PRODUCTS
--- =============================================
-INSERT INTO Products VALUES
-('DEL-001',N'Dell Inspiron 15',20,1500,5,1,GETDATE()),
-('ASUS-001',N'Asus ROG Strix',15,2200,3,2,GETDATE()),
-('HP-001',N'HP Pavilion',10,1300,2,3,GETDATE())
-GO
-
--- =============================================
 -- LOGIN
 -- =============================================
 CREATE OR ALTER PROCEDURE sp_Login
-@Username NVARCHAR(100),
-@Password NVARCHAR(100)
+(
+    @Username NVARCHAR(100),
+    @Password NVARCHAR(100)
+)
 AS
 BEGIN
-    SELECT * FROM Users
-    WHERE Username=@Username AND Password=@Password
+
+    SELECT *
+    FROM Users
+    WHERE Username = @Username
+    AND Password = @Password
+    AND is_deleted = 0
+
 END
 GO
 
 -- =============================================
--- SUPPLIER CRUD
--- =============================================
-CREATE OR ALTER PROCEDURE sp_AddSupplier
-@SupplierCode NVARCHAR(50),
-@SupplierName NVARCHAR(100),
-@Phone VARCHAR(15),
-@Address NVARCHAR(255)
-AS
-INSERT INTO Suppliers
-VALUES(@SupplierCode,@SupplierName,@Phone,@Address,GETDATE())
-GO
-
-CREATE OR ALTER PROCEDURE sp_GetSuppliers
-AS
-SELECT * FROM Suppliers
-GO
-
-CREATE OR ALTER PROCEDURE sp_UpdateSupplier
-@SupplierId INT,
-@SupplierCode NVARCHAR(50),
-@SupplierName NVARCHAR(100),
-@Phone VARCHAR(15),
-@Address NVARCHAR(255)
-AS
-UPDATE Suppliers
-SET SupplierCode=@SupplierCode,
-SupplierName=@SupplierName,
-Phone=@Phone,
-Address=@Address
-WHERE SupplierId=@SupplierId
-GO
-
-CREATE OR ALTER PROCEDURE sp_DeleteSupplier
-@SupplierId INT
-AS
-DELETE FROM Suppliers WHERE SupplierId=@SupplierId
-GO
-
--- =============================================
--- PRODUCT CRUD
--- =============================================
-CREATE OR ALTER PROCEDURE sp_AddProduct
-@SKU NVARCHAR(50),
-@ProductName NVARCHAR(150),
-@Quantity INT,
-@Price DECIMAL(18,2),
-@MinStock INT,
-@SupplierId INT
-AS
-INSERT INTO Products
-VALUES(@SKU,@ProductName,@Quantity,@Price,@MinStock,@SupplierId,GETDATE())
-GO
-
-CREATE OR ALTER PROCEDURE sp_GetProducts
-AS
-SELECT p.*,s.SupplierName
-FROM Products p
-LEFT JOIN Suppliers s ON p.SupplierId=s.SupplierId
-GO
-
-CREATE OR ALTER PROCEDURE sp_UpdateProduct
-@ProductId INT,
-@SKU NVARCHAR(50),
-@ProductName NVARCHAR(150),
-@Quantity INT,
-@Price DECIMAL(18,2),
-@MinStock INT,
-@SupplierId INT
-AS
-UPDATE Products
-SET SKU=@SKU,
-ProductName=@ProductName,
-Quantity=@Quantity,
-Price=@Price,
-MinStock=@MinStock,
-SupplierId=@SupplierId
-WHERE ProductId=@ProductId
-GO
-
-CREATE OR ALTER PROCEDURE sp_DeleteProduct
-@ProductId INT
-AS
-DELETE FROM Products WHERE ProductId=@ProductId
-GO
-
--- =============================================
--- IMPORT
--- =============================================
-CREATE OR ALTER PROCEDURE sp_ImportStock
-@ProductId INT,
-@Quantity INT,
-@Note NVARCHAR(255)
-AS
-BEGIN
-UPDATE Products SET Quantity=Quantity+@Quantity WHERE ProductId=@ProductId
-
-INSERT INTO StockLogs(ProductId,Quantity,Type,Note)
-VALUES(@ProductId,@Quantity,'IMPORT',@Note)
-END
-GO
-
--- =============================================
--- EXPORT
--- =============================================
-CREATE OR ALTER PROCEDURE sp_ExportStock
-@ProductId INT,
-@Quantity INT,
-@Note NVARCHAR(255)
-AS
-BEGIN
-DECLARE @CurrentStock INT
-
-SELECT @CurrentStock=Quantity
-FROM Products
-WHERE ProductId=@ProductId
-
-IF(@CurrentStock<@Quantity)
-BEGIN
-RAISERROR(N'Không đủ hàng',16,1)
-RETURN
-END
-
-UPDATE Products
-SET Quantity=Quantity-@Quantity
-WHERE ProductId=@ProductId
-
-INSERT INTO StockLogs(ProductId,Quantity,Type,Note)
-VALUES(@ProductId,@Quantity,'EXPORT',@Note)
-END
-GO
-
--- =============================================
--- REPORTS
--- =============================================
-CREATE OR ALTER PROCEDURE sp_LowStockReport
-AS
-SELECT * FROM Products
-WHERE Quantity<=MinStock
-GO
-
-CREATE OR ALTER PROCEDURE sp_InventoryHistory
-AS
-SELECT sl.*,p.ProductName,p.SKU
-FROM StockLogs sl
-JOIN Products p ON sl.ProductId=p.ProductId
-ORDER BY sl.CreatedAt DESC
-GO
-
-CREATE OR ALTER PROCEDURE sp_StockDashboard
-AS
-SELECT
-COUNT(*) TotalProducts,
-SUM(Quantity) TotalStock,
-(SELECT COUNT(*) FROM Products WHERE Quantity<=MinStock) LowStockProducts
-FROM Products
-GO
-
-CREATE OR ALTER PROCEDURE sp_SearchProducts
-@Keyword NVARCHAR(100)
-AS
-SELECT *
-FROM Products
-WHERE ProductName LIKE '%'+@Keyword+'%'
-OR SKU LIKE '%'+@Keyword+'%'
-GO
-
-CREATE OR ALTER PROCEDURE sp_GetProductsPaging
-@Page INT,
-@PageSize INT
-AS
-SELECT *
-FROM Products
-ORDER BY ProductId
-OFFSET(@Page-1)*@PageSize ROWS
-FETCH NEXT @PageSize ROWS ONLY
-GO
-
-CREATE OR ALTER PROCEDURE sp_StockReport
-AS
-SELECT
-p.ProductName,
-SUM(CASE WHEN sl.Type='IMPORT' THEN sl.Quantity ELSE 0 END) TotalImport,
-SUM(CASE WHEN sl.Type='EXPORT' THEN sl.Quantity ELSE 0 END) TotalExport
-FROM StockLogs sl
-JOIN Products p ON sl.ProductId=p.ProductId
-GROUP BY p.ProductName
-GO
--- =============================================
--- ĐĂNG KÝ TÀI KHOẢN
+-- REGISTER
 -- =============================================
 CREATE OR ALTER PROCEDURE sp_Register
 (
@@ -353,11 +198,13 @@ BEGIN
         WHERE Username = @Username
     )
     BEGIN
-        RAISERROR(
+        RAISERROR
+        (
             N'Tài khoản đã tồn tại',
             16,
             1
         )
+
         RETURN
     END
 
@@ -375,4 +222,429 @@ BEGIN
     )
 
 END
+GO
+
+-- =============================================
+-- SUPPLIER CRUD
+-- =============================================
+CREATE OR ALTER PROCEDURE sp_AddSupplier
+(
+    @SupplierCode NVARCHAR(50),
+    @SupplierName NVARCHAR(100),
+    @Phone VARCHAR(15),
+    @Address NVARCHAR(255)
+)
+AS
+BEGIN
+
+    INSERT INTO Suppliers
+    VALUES
+    (
+        @SupplierCode,
+        @SupplierName,
+        @Phone,
+        @Address,
+        GETDATE()
+    )
+
+END
+GO
+
+CREATE OR ALTER PROCEDURE sp_GetSuppliers
+AS
+BEGIN
+
+    SELECT *
+    FROM Suppliers
+
+END
+GO
+
+CREATE OR ALTER PROCEDURE sp_UpdateSupplier
+(
+    @SupplierId INT,
+    @SupplierCode NVARCHAR(50),
+    @SupplierName NVARCHAR(100),
+    @Phone VARCHAR(15),
+    @Address NVARCHAR(255)
+)
+AS
+BEGIN
+
+    UPDATE Suppliers
+    SET
+        SupplierCode = @SupplierCode,
+        SupplierName = @SupplierName,
+        Phone = @Phone,
+        Address = @Address
+    WHERE SupplierId = @SupplierId
+
+END
+GO
+
+CREATE OR ALTER PROCEDURE sp_DeleteSupplier
+(
+    @SupplierId INT
+)
+AS
+BEGIN
+
+    DELETE FROM Suppliers
+    WHERE SupplierId = @SupplierId
+
+END
+GO
+
+-- =============================================
+-- PRODUCT CRUD
+-- =============================================
+CREATE OR ALTER PROCEDURE sp_AddProduct
+(
+    @SKU NVARCHAR(50),
+    @ProductName NVARCHAR(150),
+    @Quantity INT,
+    @Price DECIMAL(18,2),
+    @MinStock INT,
+    @SupplierId INT
+)
+AS
+BEGIN
+
+    INSERT INTO Products
+    VALUES
+    (
+        @SKU,
+        @ProductName,
+        @Quantity,
+        @Price,
+        @MinStock,
+        @SupplierId,
+        GETDATE()
+    )
+
+END
+GO
+
+CREATE OR ALTER PROCEDURE sp_GetProducts
+AS
+BEGIN
+
+    SELECT
+        p.*,
+        s.SupplierName
+    FROM Products p
+    LEFT JOIN Suppliers s
+        ON p.SupplierId = s.SupplierId
+
+END
+GO
+
+CREATE OR ALTER PROCEDURE sp_UpdateProduct
+(
+    @ProductId INT,
+    @SKU NVARCHAR(50),
+    @ProductName NVARCHAR(150),
+    @Quantity INT,
+    @Price DECIMAL(18,2),
+    @MinStock INT,
+    @SupplierId INT
+)
+AS
+BEGIN
+
+    UPDATE Products
+    SET
+        SKU = @SKU,
+        ProductName = @ProductName,
+        Quantity = @Quantity,
+        Price = @Price,
+        MinStock = @MinStock,
+        SupplierId = @SupplierId
+    WHERE ProductId = @ProductId
+
+END
+GO
+
+CREATE OR ALTER PROCEDURE sp_DeleteProduct
+(
+    @ProductId INT
+)
+AS
+BEGIN
+
+    DELETE FROM Products
+    WHERE ProductId = @ProductId
+
+END
+GO
+
+-- =============================================
+-- IMPORT STOCK
+-- =============================================
+CREATE OR ALTER PROCEDURE sp_ImportStock
+(
+    @ProductId INT,
+    @Quantity INT,
+    @Note NVARCHAR(255)
+)
+AS
+BEGIN
+
+    UPDATE Products
+    SET Quantity = Quantity + @Quantity
+    WHERE ProductId = @ProductId
+
+    INSERT INTO StockLogs
+    (
+        ProductId,
+        Quantity,
+        Type,
+        Note
+    )
+    VALUES
+    (
+        @ProductId,
+        @Quantity,
+        'IMPORT',
+        @Note
+    )
+
+END
+GO
+
+-- =============================================
+-- EXPORT STOCK
+-- =============================================
+CREATE OR ALTER PROCEDURE sp_ExportStock
+(
+    @ProductId INT,
+    @Quantity INT,
+    @Note NVARCHAR(255)
+)
+AS
+BEGIN
+
+    DECLARE @CurrentStock INT
+
+    SELECT @CurrentStock = Quantity
+    FROM Products
+    WHERE ProductId = @ProductId
+
+    IF(@CurrentStock < @Quantity)
+    BEGIN
+
+        RAISERROR
+        (
+            N'Không đủ hàng',
+            16,
+            1
+        )
+
+        RETURN
+    END
+
+    UPDATE Products
+    SET Quantity = Quantity - @Quantity
+    WHERE ProductId = @ProductId
+
+    INSERT INTO StockLogs
+    (
+        ProductId,
+        Quantity,
+        Type,
+        Note
+    )
+    VALUES
+    (
+        @ProductId,
+        @Quantity,
+        'EXPORT',
+        @Note
+    )
+
+END
+GO
+
+-- =============================================
+-- REPORTS
+-- =============================================
+CREATE OR ALTER PROCEDURE sp_LowStockReport
+AS
+BEGIN
+
+    SELECT *
+    FROM Products
+    WHERE Quantity <= MinStock
+
+END
+GO
+
+CREATE OR ALTER PROCEDURE sp_InventoryHistory
+AS
+BEGIN
+
+    SELECT
+        sl.*,
+        p.ProductName,
+        p.SKU
+    FROM StockLogs sl
+    JOIN Products p
+        ON sl.ProductId = p.ProductId
+    ORDER BY sl.CreatedAt DESC
+
+END
+GO
+
+CREATE OR ALTER PROCEDURE sp_StockDashboard
+AS
+BEGIN
+
+    SELECT
+        COUNT(*) TotalProducts,
+        SUM(Quantity) TotalStock,
+        (
+            SELECT COUNT(*)
+            FROM Products
+            WHERE Quantity <= MinStock
+        ) LowStockProducts
+    FROM Products
+
+END
+GO
+
+CREATE OR ALTER PROCEDURE sp_SearchProducts
+(
+    @Keyword NVARCHAR(100)
+)
+AS
+BEGIN
+
+    SELECT *
+    FROM Products
+    WHERE ProductName LIKE '%' + @Keyword + '%'
+    OR SKU LIKE '%' + @Keyword + '%'
+
+END
+GO
+
+CREATE OR ALTER PROCEDURE sp_GetProductsPaging
+(
+    @Page INT,
+    @PageSize INT
+)
+AS
+BEGIN
+
+    SELECT *
+    FROM Products
+    ORDER BY ProductId
+    OFFSET (@Page - 1) * @PageSize ROWS
+    FETCH NEXT @PageSize ROWS ONLY
+
+END
+GO
+
+CREATE OR ALTER PROCEDURE sp_StockReport
+AS
+BEGIN
+
+    SELECT
+        p.ProductName,
+
+        SUM
+        (
+            CASE
+                WHEN sl.Type = 'IMPORT'
+                THEN sl.Quantity
+                ELSE 0
+            END
+        ) TotalImport,
+
+        SUM
+        (
+            CASE
+                WHEN sl.Type = 'EXPORT'
+                THEN sl.Quantity
+                ELSE 0
+            END
+        ) TotalExport
+
+    FROM StockLogs sl
+    JOIN Products p
+        ON sl.ProductId = p.ProductId
+
+    GROUP BY p.ProductName
+
+END
+GO
+
+-- =============================================
+-- SAMPLE SUPPLIERS 
+-- =============================================
+INSERT INTO Suppliers VALUES
+('SUP-001',N'Dell Supplier','0900000001',N'HCM',GETDATE()),
+('SUP-002',N'Asus Supplier','0900000002',N'Hà Nội',GETDATE()),
+('SUP-003',N'HP Supplier','0900000003',N'Đà Nẵng',GETDATE()),
+('SUP-004',N'Acer Supplier','0900000004',N'Cần Thơ',GETDATE()),
+('SUP-005',N'Lenovo Supplier','0900000005',N'Hải Phòng',GETDATE()),
+('SUP-006',N'MSI Supplier','0900000006',N'Nha Trang',GETDATE()),
+('SUP-007',N'Apple Supplier','0900000007',N'Biên Hòa',GETDATE()),
+('SUP-008',N'Samsung Supplier','0900000008',N'Vũng Tàu',GETDATE()),
+('SUP-009',N'LG Supplier','0900000009',N'Bình Dương',GETDATE()),
+('SUP-010',N'Sony Supplier','0900000010',N'Huế',GETDATE())
+GO
+
+-- =============================================
+-- SAMPLE
+-- =============================================
+INSERT INTO Products VALUES
+('DEL-001',N'Dell Inspiron 15',20,1500,5,1,GETDATE()),
+('DEL-002',N'Dell XPS 13',12,2500,5,1,GETDATE()),
+('DEL-003',N'Dell Latitude 14',18,1800,5,1,GETDATE()),
+('DEL-004',N'Dell Alienware M15',7,3200,2,1,GETDATE()),
+
+('ASUS-001',N'Asus ROG Strix',15,2200,3,2,GETDATE()),
+('ASUS-002',N'Asus TUF Gaming',25,1700,5,2,GETDATE()),
+('ASUS-003',N'Asus Zenbook 14',14,1900,4,2,GETDATE()),
+('ASUS-004',N'Asus Vivobook 15',30,1200,6,2,GETDATE()),
+
+('HP-001',N'HP Pavilion',10,1300,2,3,GETDATE()),
+('HP-002',N'HP Envy 13',9,2100,2,3,GETDATE()),
+('HP-003',N'HP Elitebook',16,2400,4,3,GETDATE()),
+('HP-004',N'HP Omen 16',8,2800,2,3,GETDATE()),
+
+('ACER-001',N'Acer Nitro 5',20,1600,5,4,GETDATE()),
+('ACER-002',N'Acer Aspire 7',22,1400,5,4,GETDATE()),
+('ACER-003',N'Acer Predator Helios',6,3100,2,4,GETDATE()),
+('ACER-004',N'Acer Swift X',11,1750,3,4,GETDATE()),
+
+('LEN-001',N'Lenovo ThinkPad X1',13,2600,3,5,GETDATE()),
+('LEN-002',N'Lenovo Legion 5',17,2300,4,5,GETDATE()),
+('LEN-003',N'Lenovo IdeaPad 5',28,1250,6,5,GETDATE()),
+('LEN-004',N'Lenovo Yoga Slim',12,1850,3,5,GETDATE()),
+
+('MSI-001',N'MSI Katana GF66',14,2100,3,6,GETDATE()),
+('MSI-002',N'MSI Stealth 15M',9,2900,2,6,GETDATE()),
+('MSI-003',N'MSI Modern 14',19,1450,5,6,GETDATE()),
+('MSI-004',N'MSI Raider GE78',5,3900,1,6,GETDATE()),
+
+('APL-001',N'Macbook Air M2',20,2800,5,7,GETDATE()),
+('APL-002',N'Macbook Pro 14',10,4200,2,7,GETDATE()),
+('APL-003',N'Macbook Pro 16',6,5200,1,7,GETDATE()),
+('APL-004',N'iMac M3',7,3500,2,7,GETDATE()),
+
+('SAM-001',N'Samsung Galaxy Book 3',15,2100,4,8,GETDATE()),
+('SAM-002',N'Samsung Notebook 9',13,1800,3,8,GETDATE()),
+('SAM-003',N'Samsung Odyssey',8,2700,2,8,GETDATE()),
+('SAM-004',N'Samsung Chromebook',24,900,5,8,GETDATE()),
+
+('LG-001',N'LG Gram 14',16,2400,4,9,GETDATE()),
+('LG-002',N'LG Gram 16',11,2900,3,9,GETDATE()),
+('LG-003',N'LG Ultra PC',18,1500,5,9,GETDATE()),
+('LG-004',N'LG UltraGear Laptop',7,3100,2,9,GETDATE()),
+
+('SONY-001',N'Sony Vaio S13',9,2000,2,10,GETDATE()),
+('SONY-002',N'Sony Vaio SX14',8,2600,2,10,GETDATE()),
+('SONY-003',N'Sony Vaio FE14',15,1700,4,10,GETDATE()),
+('SONY-004',N'Sony Vaio Z',5,4500,1,10,GETDATE())
 GO
