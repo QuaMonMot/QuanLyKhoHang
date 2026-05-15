@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Đồ Án: Quản Lý Kho Hàng</title>
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.min.css">
+    <style>
+        .reveal h1, .reveal h2, .reveal h3 {
+            text-transform: none;
+            color: #4CAF50;
+        }
+        .reveal ul {
+            font-size: 0.8em;
+            line-height: 1.5;
+        }
+        .highlight {
+            color: #FFC107;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Slide 1: Tiêu đề -->
+            <section>
+                <h2>HỆ THỐNG QUẢN LÝ KHO HÀNG</h2>
+                <h4 style="color: white;">(Warehouse Management System)</h4>
+                <br>
+                <p>Môn học: Đồ Án Chuyên Ngành</p>
+                <p>Sinh viên thực hiện: <b>[Tên Của Bạn]</b></p>
+                <p><i>Mục tiêu: Xây dựng hệ thống số hóa quy trình quản lý, nhập/xuất và theo dõi tồn kho theo thời gian thực.</i></p>
+            </section>
+
+            <!-- Slide 2: Kiến trúc hệ thống -->
+            <section>
+                <h2>Tổng Quan Kiến Trúc</h2>
+                <p>Mô hình <span class="highlight">N-Tier (Đa tầng)</span> trên nền tảng .NET Core 8</p>
+                <ul>
+                    <li><b>Presentation Layer (Web):</b> ASP.NET Core MVC (Views, Controllers).</li>
+                    <li><b>API Layer:</b> RESTful endpoints hỗ trợ đa nền tảng.</li>
+                    <li><b>Business Logic (BLL):</b> Xử lý nghiệp vụ tập trung (Services).</li>
+                    <li><b>Data Access (DAL):</b> Áp dụng Repository Pattern với ADO.NET (SqlConnectionFactory).</li>
+                    <li><b>Models:</b> Đối tượng thực thể dữ liệu (Product, StockLog...).</li>
+                </ul>
+            </section>
+
+            <!-- Slide 3: Chức năng -->
+            <section>
+                <h2>Các Chức Năng Chính</h2>
+                <ul>
+                    <li><b>Quản lý Hệ Thống:</b> Xác thực người dùng, phân quyền an toàn.</li>
+                    <li><b>Quản lý Danh Mục:</b> Khởi tạo & cập nhật thông tin Hàng hóa (SKU), Nhà cung cấp.</li>
+                    <li><b>Quản lý Kho (Stock):</b> 
+                        <ul>
+                            <li>Nhập kho (Import) & Xuất kho (Export).</li>
+                            <li>Tự động ghi nhận lịch sử biến động (StockLog).</li>
+                        </ul>
+                    </li>
+                    <li><b>Thống kê & Dashboard:</b> Báo cáo tổng quan số lượng, giá trị, cảnh báo tồn kho thấp.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 4: Database -->
+            <section>
+                <h2>Cơ Sở Dữ Liệu & Hiệu Năng</h2>
+                <ul>
+                    <li><b>Hệ quản trị CSDL:</b> Microsoft SQL Server.</li>
+                    <li><b>Tối ưu bằng Stored Procedures:</b> Mọi thao tác truy vấn phức tạp (sp_StockDashboard, sp_ImportStock, sp_LowStockReport) được xử lý dưới DB giúp tăng tốc tối đa.</li>
+                    <li><b>Bảo toàn Dữ Liệu:</b> Sử dụng cơ chế Transaction bên trong SQL để đảm bảo tính nhất quán (ACID) khi nhiều luồng nhập/xuất cùng lúc.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 5: Điểm nổi bật -->
+            <section>
+                <h2>Điểm Nổi Bật Của Hệ Thống</h2>
+                <ul>
+                    <li><span class="highlight">Repository Pattern & DI:</span> Tách biệt rõ ràng giao diện và truy xuất dữ liệu, dễ dàng mở rộng.</li>
+                    <li><span class="highlight">Bảo mật cao:</span> Tránh SQL Injection thông qua Parameterized Queries (ADO.NET). Tách rời Web và API.</li>
+                    <li><span class="highlight">UX Tối Ưu:</span> Phân trang dữ liệu (Paging) và tìm kiếm (Search) tốc độ cao giúp xử lý khối lượng lớn hàng hóa mà không bị giật lag.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 6: Phát triển tương lai -->
+            <section>
+                <h2>Hướng Phát Triển Tương Lai</h2>
+                <ul>
+                    <li><b>Tích hợp Mobile App:</b> Quét mã vạch (Barcode/QR Code) cho nhập xuất kho qua điện thoại di động nhờ hạ tầng API sẵn có.</li>
+                    <li><b>Hệ thống cảnh báo tự động:</b> Cấu hình gửi Email/SMS khi hàng chạm ngưỡng tối thiểu.</li>
+                    <li><b>Phân tích tài chính (BI):</b> Bổ sung biểu đồ trực quan dòng tiền và chi phí lưu kho.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 7: Cảm ơn -->
+            <section>
+                <h2>Cảm ơn Thầy Cô và các Bạn đã lắng nghe!</h2>
+                <br>
+                <h3 class="highlight">Q&A - Hỏi Đáp</h3>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script>
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            center: true,
+            hash: true,
+            transition: 'slide' // none/fade/slide/convex/concave/zoom
+        });
+    </script>
+</body>
+</html>

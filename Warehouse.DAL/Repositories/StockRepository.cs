@@ -148,7 +148,11 @@ namespace Warehouse.DAL.Repositories
                         MinStock =
                             Convert.ToInt32(
                                 reader["MinStock"]
-                            )
+                            ),
+                        SupplierId = 
+                            Convert.ToInt32(
+                                reader["SupplierId"]
+                             )
                     });
                 }
             }
@@ -202,7 +206,11 @@ namespace Warehouse.DAL.Repositories
                         MinStock =
                             Convert.ToInt32(
                                 reader["MinStock"]
-                            )
+                            ),
+                            SupplierId =
+                            Convert.ToInt32(
+                                reader["SupplierId"]
+                             )
                     });
                 }
             }
@@ -370,7 +378,11 @@ namespace Warehouse.DAL.Repositories
                         MinStock =
                             Convert.ToInt32(
                                 reader["MinStock"]
-                            )
+                            ),
+                        SupplierId =
+                            Convert.ToInt32(
+                                reader["SupplierId"]
+                             )
                     });
                 }
             }

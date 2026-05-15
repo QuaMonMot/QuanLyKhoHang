@@ -41,7 +41,8 @@ namespace Warehouse.DAL.Repositories
                         ProductName = reader["ProductName"].ToString(),
                         Quantity = Convert.ToInt32(reader["Quantity"]),
                         Price = Convert.ToDecimal(reader["Price"]),
-                        MinStock = Convert.ToInt32(reader["MinStock"])
+                        MinStock = Convert.ToInt32(reader["MinStock"]),
+                        SupplierId = Convert.ToInt32(reader["SupplierId"])
                     });
                 }
             }
