@@ -10,7 +10,7 @@ namespace Warehouse.API.Controllers
     {
         private readonly IStockService
             _stockService;
-
+        // Dependency Injection qua Constructor
         public StockController(
             IStockService stockService
         )
@@ -45,10 +45,9 @@ namespace Warehouse.API.Controllers
         [HttpPost("export")]
         [EndpointSummary("Xuất sản phẩm khỏi kho")]
 
-        public IActionResult ExportStock(
-            [FromBody] ExportStockDTO dto
-        )
+        public IActionResult ExportStock([FromBody] ExportStockDTO dto        )
         {
+            // Gọi tầng BLL để xử lý nghiệp vụ xuất kho
             _stockService.ExportStock(
                 dto.ProductId,
                 dto.Quantity,
