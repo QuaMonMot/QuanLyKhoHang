@@ -11,7 +11,7 @@ namespace Warehouse.DAL.Interfaces
     public interface IAuthRepository
     {
         User? GetById(int id);
-        User Login(string username, string password);
+        User? Login(string username, string password);
         void Register(User user);
         void UpdateProfile(int userId, UpdateProfileDTO dto);
     };

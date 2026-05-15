@@ -1,46 +1,38 @@
-﻿@model IEnumerable<Warehouse.Web.Models.StockReportViewModel>
+@model IEnumerable<Warehouse.Web.Models.StockReportViewModel>
 
 @{
     ViewData["Title"] = "Báo cáo kho";
 }
 
-<div class="container-fluid pt-4 px-4">
+<div class="page-title">
+    <span><i class="fa-solid fa-chart-line me-2 text-primary"></i> Báo cáo nhập xuất kho</span>
+</div>
 
-    <div class="bg-light rounded p-4">
+<div class="report-panel">
+    <div class="table-responsive table-wrapper">
+        <table class="table table-bordered table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th class="text-center">Tổng nhập</th>
+                    <th class="text-center">Tổng xuất</th>
+                </tr>
+            </thead>
 
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <h4 class="mb-0">Báo cáo nhập xuất kho</h4>
-        </div>
-
-        <div class="table-responsive">
-
-            <table class="table table-bordered table-hover">
-
-                <thead class="table-dark">
+            <tbody>
+                @foreach (var item in Model)
+                {
                     <tr>
-                        <th>Tên sản phẩm</th>
-                        <th>Tổng nhập</th>
-                        <th>Tổng xuất</th>
+                        <td>@item.ProductName</td>
+                        <td class="text-center">
+                            <span class="badge bg-success rounded-pill px-3 py-2">@item.TotalImport</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-danger rounded-pill px-3 py-2">@item.TotalExport</span>
+                        </td>
                     </tr>
-                </thead>
-
-                <tbody>
-
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.ProductName</td>
-                            <td>@item.TotalImport</td>
-                            <td>@item.TotalExport</td>
-                        </tr>
-                    }
-
-                </tbody>
-
-            </table>
-
-        </div>
-
+                }
+            </tbody>
+        </table>
     </div>
-
 </div>

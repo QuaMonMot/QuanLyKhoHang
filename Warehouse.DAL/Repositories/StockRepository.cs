@@ -308,15 +308,6 @@ namespace Warehouse.DAL.Repositories
                             reader["LowStockProducts"]
                         );
 
-                    dashboard.TotalImport =
-                        Convert.ToInt32(
-                            reader["TotalImport"]
-                        );
-
-                    dashboard.TotalExport =
-                        Convert.ToInt32(
-                            reader["TotalExport"]
-                        );
                 }
             }
 

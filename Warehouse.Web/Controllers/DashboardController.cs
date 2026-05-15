@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using Warehouse.Web.Models;
 
 namespace Warehouse.Web.Controllers
 {
@@ -24,17 +25,40 @@ namespace Warehouse.Web.Controllers
 
             string apiUrl =
                 _configuration["ApiUrl"]
-                + "Stock/report";
+                + "Stock/dashboard";
 
-            var response =
-                await client.GetAsync(apiUrl);
+            try
+            {
+                var response =
+                    await client.GetAsync(apiUrl);
 
-            var json =
-                await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    ViewBag.Error = "Không tải được dữ liệu tổng quan từ API.";
 
-            ViewBag.ChartData = json;
+                    return View(new DashboardViewModel());
+                }
 
-            return View();
+                var json =
+                    await response.Content.ReadAsStringAsync();
+
+                var dashboard =
+                    JsonSerializer.Deserialize<DashboardViewModel>(
+                        json,
+                        new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        }
+                    ) ?? new DashboardViewModel();
+
+                return View(dashboard);
+            }
+            catch (HttpRequestException)
+            {
+                ViewBag.Error = "Không kết nối được API dashboard.";
+
+                return View(new DashboardViewModel());
+            }
         }
     }
 }

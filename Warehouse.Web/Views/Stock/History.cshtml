@@ -1,73 +1,54 @@
-﻿@model List<Warehouse.Web.Models.StockHistoryViewModel>
+@model List<Warehouse.Web.Models.StockHistoryViewModel>
 
 @{
     ViewData["Title"] = "Lịch sử kho";
 }
 
-<div class="container mt-4">
+<div class="page-title">
+    <span><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i> Lịch sử nhập xuất kho</span>
+    <a asp-controller="Stock" asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+    </a>
+</div>
 
-    <div class="d-flex justify-content-between mb-3">
-        <h2>Lịch sử nhập xuất kho</h2>
-
-        <a asp-controller="Stock"
-           asp-action="Index"
-           class="btn btn-secondary">
-            Quay lại
-        </a>
-    </div>
-
-    <table class="table table-bordered table-hover">
-
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>SKU</th>
-                <th>Sản phẩm</th>
-                <th>Số lượng</th>
-                <th>Loại</th>
-                <th>Ghi chú</th>
-                <th>Ngày</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            @foreach (var item in Model)
-            {
+<div class="section-panel">
+    <div class="table-responsive table-wrapper">
+        <table class="table table-bordered table-hover align-middle mb-0">
+            <thead class="table-dark">
                 <tr>
-                    <td>@item.LogId</td>
-
-                    <td>@item.SKU</td>
-
-                    <td>@item.ProductName</td>
-
-                    <td>@item.Quantity</td>
-
-                    <td>
-                        @if (item.Type == "IMPORT")
-                        {
-                            <span class="badge bg-success">
-                                Nhập kho
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">
-                                Xuất kho
-                            </span>
-                        }
-                    </td>
-
-                    <td>@item.Note</td>
-
-                    <td>
-                        @item.CreatedAt.ToString("dd/MM/yyyy HH:mm")
-                    </td>
+                    <th>ID</th>
+                    <th>SKU</th>
+                    <th>Sản phẩm</th>
+                    <th class="text-center">Số lượng</th>
+                    <th class="text-center">Loại</th>
+                    <th>Ghi chú</th>
+                    <th>Ngày</th>
                 </tr>
-            }
+            </thead>
 
-        </tbody>
-
-    </table>
-
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.LogId</td>
+                        <td><span class="badge bg-light text-dark border">@item.SKU</span></td>
+                        <td>@item.ProductName</td>
+                        <td class="text-center">@item.Quantity</td>
+                        <td class="text-center">
+                            @if (item.Type == "IMPORT")
+                            {
+                                <span class="badge bg-success rounded-pill px-3 py-2">Nhập kho</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger rounded-pill px-3 py-2">Xuất kho</span>
+                            }
+                        </td>
+                        <td>@item.Note</td>
+                        <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

@@ -1,90 +1,71 @@
+@model Warehouse.Web.Models.DashboardViewModel
+
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Tổng quan";
 }
 
 <div class="page-title">
-    <span><i class="fa-solid fa-chart-pie me-2 text-primary"></i> Tổng quan</span>
+    <span><i class="fa-solid fa-gauge-high me-2 text-primary"></i> Tổng quan kho</span>
+    <a class="btn btn-primary" asp-controller="Report" asp-action="Index">
+        <i class="fa-solid fa-file-lines me-2"></i>Báo cáo
+    </a>
 </div>
 
-<div class="row">
-    <div class="col-xl-8 col-lg-10 col-md-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="fa-solid fa-chart-column me-2"></i> Thống kê nhập xuất kho</span>
-                <div class="dropdown">
-                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        Tùy chọn
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" asp-controller="Report" asp-action="Index">Xuất báo cáo</a></li>
-                        <li><a class="dropdown-item" href="#">Làm mới</a></li>
-                    </ul>
-                </div>
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-warning" role="alert">
+        @ViewBag.Error
+    </div>
+}
+
+<section class="dashboard-hero">
+    <div>
+        <p class="dashboard-eyebrow">Warehouse API Dashboard</p>
+        <h2>Thông tin tồn kho hiện tại</h2>
+        <p class="dashboard-copy">
+            Dữ liệu được lấy từ endpoint <strong>/api/Stock/dashboard</strong>, hiển thị trực tiếp bằng các chỉ số tổng quan thay cho biểu đồ.
+        </p>
+    </div>
+    <div class="dashboard-total">
+        <span>Tổng tồn kho</span>
+        <strong>@Model.TotalStock.ToString("N0")</strong>
+    </div>
+</section>
+
+<div class="row g-4">
+    <div class="col-lg-4 col-md-6">
+        <div class="metric-card">
+            <div class="metric-icon">
+                <i class="fa-solid fa-boxes-stacked"></i>
             </div>
-            <div class="card-body">
-                <canvas id="stockChart" height="100"></canvas>
+            <div>
+                <span>Sản phẩm</span>
+                <strong>@Model.TotalProducts.ToString("N0")</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="metric-card">
+            <div class="metric-icon">
+                <i class="fa-solid fa-warehouse"></i>
+            </div>
+            <div>
+                <span>Tổng tồn</span>
+                <strong>@Model.TotalStock.ToString("N0")</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="metric-card warning">
+            <div class="metric-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <span>Tồn thấp</span>
+                <strong>@Model.LowStockProducts.ToString("N0")</strong>
             </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        const data = @Html.Raw(ViewBag.ChartData ?? "[]");
-
-        if (data.length > 0) {
-            const labels = data.map(x => x.productName);
-            const importData = data.map(x => x.totalImport);
-            const exportData = data.map(x => x.totalExport);
-
-            const ctx = document.getElementById('stockChart');
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Nhập kho',
-                            data: importData,
-                            backgroundColor: 'rgba(67, 97, 238, 0.7)',
-                            borderColor: 'rgba(67, 97, 238, 1)',
-                            borderWidth: 1,
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Xuất kho',
-                            data: exportData,
-                            backgroundColor: 'rgba(247, 37, 133, 0.7)',
-                            borderColor: 'rgba(247, 37, 133, 1)',
-                            borderWidth: 1,
-                            borderRadius: 4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                borderDash: [2, 4],
-                                color: "rgba(0,0,0,0.05)"
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    </script>
-}
