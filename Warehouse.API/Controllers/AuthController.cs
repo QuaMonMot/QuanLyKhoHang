@@ -86,6 +86,8 @@ namespace Warehouse.API.Controllers
         }
 
         [HttpGet("profile/{id}")]
+        [EndpointSummary("Tìm người dùng theo ID")]
+
         public IActionResult GetProfile(int id)
         {
             var user = _authService.GetById(id);
