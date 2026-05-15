@@ -109,6 +109,8 @@ namespace Warehouse.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(SupplierViewModel model)
         {
+            if (!ModelState.IsValid) return View(model);
+
             var client = _httpClientFactory.CreateClient();
             var apiUrl = _configuration["ApiUrl"] + "Supplier/" + model.SupplierId;
             var json = JsonSerializer.Serialize(model);

@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Warehouse.DAL.DbContext;
 using Warehouse.DAL.Interfaces;
@@ -148,7 +148,13 @@ namespace Warehouse.DAL.Repositories
                         MinStock =
                             Convert.ToInt32(
                                 reader["MinStock"]
-                            )
+                            ),
+                        SupplierId =
+                            Convert.ToInt32(
+                                reader["SupplierId"]
+                            ),
+                        SupplierName =
+                            reader["SupplierName"].ToString()
                     });
                 }
             }
@@ -202,7 +208,13 @@ namespace Warehouse.DAL.Repositories
                         MinStock =
                             Convert.ToInt32(
                                 reader["MinStock"]
-                            )
+                            ),
+                        SupplierId =
+                            Convert.ToInt32(
+                                reader["SupplierId"]
+                            ),
+                        SupplierName =
+                            reader["SupplierName"].ToString()
                     });
                 }
             }
@@ -251,6 +263,14 @@ namespace Warehouse.DAL.Repositories
                                 reader["Quantity"]
                             ),
 
+                        SupplierId =
+                            Convert.ToInt32(
+                                reader["SupplierId"]
+                            ),
+
+                        SupplierName =
+                            reader["SupplierName"].ToString(),
+
                         Type =
                             reader["Type"].ToString(),
 
@@ -267,6 +287,7 @@ namespace Warehouse.DAL.Repositories
 
             return logs;
         }
+
         // =========================
         // DASHBOARD
         // =========================
@@ -299,7 +320,7 @@ namespace Warehouse.DAL.Repositories
                         );
 
                     dashboard.TotalStock =
-                        Convert.ToInt32(
+                        Convert.ToInt64(
                             reader["TotalStock"]
                         );
 
@@ -308,13 +329,45 @@ namespace Warehouse.DAL.Repositories
                             reader["LowStockProducts"]
                         );
 
+                    dashboard.TotalImport =
+                        Convert.ToInt64(
+                            reader["TotalImport"]
+                        );
+
+                    dashboard.TotalExport =
+                        Convert.ToInt64(
+                            reader["TotalExport"]
+                        );
+                }
+
+                if (reader.NextResult())
+                {
+                    while (reader.Read())
+                    {
+                        dashboard.ProductStats.Add(new ProductStatistic
+                        {
+                            ProductName =
+                                reader["ProductName"].ToString(),
+
+                            TotalImport =
+                                Convert.ToInt64(
+                                    reader["TotalImport"]
+                                ),
+
+                            TotalExport =
+                                Convert.ToInt64(
+                                    reader["TotalExport"]
+                                )
+                        });
+                    }
                 }
             }
 
             return dashboard;
         }
+
         // =========================
-        // sEARCH
+        // SEARCH
         // =========================
         public List<Product> Search(string keyword)
         {
@@ -370,17 +423,24 @@ namespace Warehouse.DAL.Repositories
                         MinStock =
                             Convert.ToInt32(
                                 reader["MinStock"]
-                            )
+                            ),
+                        SupplierId =
+                            Convert.ToInt32(
+                                reader["SupplierId"]
+                            ),
+                        SupplierName =
+                            reader["SupplierName"].ToString()
                     });
                 }
             }
 
             return products;
         }
+
         // =========================
         // PAGE
         // =========================
-        public List<Product> Paging( int page,int pageSize)
+        public List<Product> Paging(int page, int pageSize)
         {
             List<Product> products = new();
 
@@ -434,13 +494,22 @@ namespace Warehouse.DAL.Repositories
                         Price =
                             Convert.ToDecimal(
                                 reader["Price"]
-                            )
+                            ),
+
+                        SupplierId =
+                            Convert.ToInt32(
+                                reader["SupplierId"]
+                            ),
+
+                        SupplierName =
+                            reader["SupplierName"].ToString()
                     });
                 }
             }
 
             return products;
         }
+
         // =========================
         // REPORT
         // =========================
@@ -471,14 +540,15 @@ namespace Warehouse.DAL.Repositories
                         ProductName =
                             reader["ProductName"]
                             .ToString(),
-
+                        SupplierName =
+                            reader["SupplierName"].ToString(),
                         TotalImport =
-                            Convert.ToInt32(
+                            Convert.ToInt64(
                                 reader["TotalImport"]
                             ),
 
                         TotalExport =
-                            Convert.ToInt32(
+                            Convert.ToInt64(
                                 reader["TotalExport"]
                             )
                     });

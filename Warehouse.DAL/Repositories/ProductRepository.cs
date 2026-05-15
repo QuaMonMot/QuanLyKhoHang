@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Warehouse.DAL.DbContext;
 using Warehouse.DAL.Interfaces;
@@ -41,7 +41,9 @@ namespace Warehouse.DAL.Repositories
                         ProductName = reader["ProductName"].ToString(),
                         Quantity = Convert.ToInt32(reader["Quantity"]),
                         Price = Convert.ToDecimal(reader["Price"]),
-                        MinStock = Convert.ToInt32(reader["MinStock"])
+                        MinStock = Convert.ToInt32(reader["MinStock"]),
+                        SupplierId = Convert.ToInt32(reader["SupplierId"]),
+                        SupplierName = reader["SupplierName"].ToString()
                     });
                 }
             }
@@ -128,7 +130,7 @@ namespace Warehouse.DAL.Repositories
             using (SqlConnection conn = _factory.CreateConnection())
             {
                 SqlCommand cmd = new SqlCommand(
-                    "SELECT * FROM Products WHERE ProductId = @ProductId",
+                    "SELECT p.*, s.SupplierName FROM Products p LEFT JOIN Suppliers s ON p.SupplierId = s.SupplierId WHERE p.ProductId = @ProductId",
                     conn
                 );
 
@@ -153,8 +155,8 @@ namespace Warehouse.DAL.Repositories
                         Price = Convert.ToDecimal(reader["Price"]),
 
                         MinStock = Convert.ToInt32(reader["MinStock"]),
-
-                        SupplierId = Convert.ToInt32(reader["SupplierId"])
+                        SupplierId = Convert.ToInt32(reader["SupplierId"]),
+                        SupplierName = reader["SupplierName"].ToString()
                     };
                 }
             }

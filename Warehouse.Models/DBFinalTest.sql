@@ -1,4 +1,4 @@
-﻿USE master
+USE master
 GO
 
 IF DB_ID('WarehouseManagement') IS NOT NULL
@@ -543,10 +543,14 @@ CREATE OR ALTER PROCEDURE sp_LowStockReport
 AS
 BEGIN
 
-    SELECT *
-    FROM Products
-    WHERE Quantity <= MinStock
-    AND is_deleted = 0
+    SELECT
+        p.*,
+        s.SupplierName
+    FROM Products p
+    LEFT JOIN Suppliers s
+        ON p.SupplierId = s.SupplierId
+    WHERE p.Quantity <= p.MinStock
+    AND p.is_deleted = 0
 
 END
 GO
@@ -558,10 +562,14 @@ BEGIN
     SELECT
         sl.*,
         p.ProductName,
-        p.SKU
+        p.SKU,
+        p.SupplierId,
+        s.SupplierName
     FROM StockLogs sl
     JOIN Products p
         ON sl.ProductId = p.ProductId
+    LEFT JOIN Suppliers s
+        ON p.SupplierId = s.SupplierId
     ORDER BY sl.CreatedAt DESC
 
 END
@@ -570,21 +578,37 @@ GO
 CREATE OR ALTER PROCEDURE sp_StockDashboard
 AS
 BEGIN
-
     SELECT
-        COUNT(*) TotalProducts,
-        SUM(Quantity) TotalStock,
-
+        CAST(COUNT(*) AS BIGINT) TotalProducts,
+        SUM(CAST(Quantity AS BIGINT)) TotalStock,
         (
-            SELECT COUNT(*)
+            SELECT CAST(COUNT(*) AS BIGINT)
             FROM Products
-            WHERE Quantity <= MinStock
-            AND is_deleted = 0
-        ) LowStockProducts
-
+            WHERE Quantity <= MinStock AND is_deleted = 0
+        ) LowStockProducts,
+        (
+            SELECT ISNULL(SUM(CAST(Quantity AS BIGINT)), 0)
+            FROM StockLogs
+            WHERE Type = 'IMPORT'
+        ) TotalImport,
+        (
+            SELECT ISNULL(SUM(CAST(Quantity AS BIGINT)), 0)
+            FROM StockLogs
+            WHERE Type = 'EXPORT'
+        ) TotalExport
     FROM Products
-    WHERE is_deleted = 0
+    WHERE is_deleted = 0;
 
+    SELECT TOP 10
+        p.ProductName,
+        SUM(CASE WHEN sl.Type = 'IMPORT' THEN CAST(sl.Quantity AS BIGINT) ELSE CAST(0 AS BIGINT) END) TotalImport,
+        SUM(CASE WHEN sl.Type = 'EXPORT' THEN CAST(sl.Quantity AS BIGINT) ELSE CAST(0 AS BIGINT) END) TotalExport
+    FROM StockLogs sl
+    JOIN Products p ON sl.ProductId = p.ProductId
+    WHERE p.is_deleted = 0
+    GROUP BY p.ProductName
+    ORDER BY (SUM(CASE WHEN sl.Type = 'IMPORT' THEN CAST(sl.Quantity AS BIGINT) ELSE CAST(0 AS BIGINT) END) + 
+              SUM(CASE WHEN sl.Type = 'EXPORT' THEN CAST(sl.Quantity AS BIGINT) ELSE CAST(0 AS BIGINT) END)) DESC;
 END
 GO
 
@@ -595,14 +619,18 @@ CREATE OR ALTER PROCEDURE sp_SearchProducts
 AS
 BEGIN
 
-    SELECT *
-    FROM Products
+    SELECT
+        p.*,
+        s.SupplierName
+    FROM Products p
+    LEFT JOIN Suppliers s
+        ON p.SupplierId = s.SupplierId
     WHERE
     (
-        ProductName LIKE '%' + @Keyword + '%'
-        OR SKU LIKE '%' + @Keyword + '%'
+        p.ProductName LIKE '%' + @Keyword + '%'
+        OR p.SKU LIKE '%' + @Keyword + '%'
     )
-    AND is_deleted = 0
+    AND p.is_deleted = 0
 
 END
 GO
@@ -615,10 +643,14 @@ CREATE OR ALTER PROCEDURE sp_GetProductsPaging
 AS
 BEGIN
 
-    SELECT *
-    FROM Products
-    WHERE is_deleted = 0
-    ORDER BY ProductId
+    SELECT
+        p.*,
+        s.SupplierName
+    FROM Products p
+    LEFT JOIN Suppliers s
+        ON p.SupplierId = s.SupplierId
+    WHERE p.is_deleted = 0
+    ORDER BY p.ProductId
     OFFSET (@Page - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY
 
@@ -631,32 +663,14 @@ BEGIN
 
     SELECT
         p.ProductName,
-
-        SUM
-        (
-            CASE
-                WHEN sl.Type = 'IMPORT'
-                THEN sl.Quantity
-                ELSE 0
-            END
-        ) TotalImport,
-
-        SUM
-        (
-            CASE
-                WHEN sl.Type = 'EXPORT'
-                THEN sl.Quantity
-                ELSE 0
-            END
-        ) TotalExport
-
+        s.SupplierName,
+        SUM(CASE WHEN sl.Type = 'IMPORT' THEN CAST(sl.Quantity AS BIGINT) ELSE CAST(0 AS BIGINT) END) TotalImport,
+        SUM(CASE WHEN sl.Type = 'EXPORT' THEN CAST(sl.Quantity AS BIGINT) ELSE CAST(0 AS BIGINT) END) TotalExport
     FROM StockLogs sl
-    JOIN Products p
-        ON sl.ProductId = p.ProductId
-
+    JOIN Products p ON sl.ProductId = p.ProductId
+    LEFT JOIN Suppliers s ON p.SupplierId = s.SupplierId
     WHERE p.is_deleted = 0
-
-    GROUP BY p.ProductName
+    GROUP BY p.ProductName, s.SupplierName
 
 END
 GO

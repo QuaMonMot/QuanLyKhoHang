@@ -28,6 +28,8 @@ namespace Warehouse.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO dto)
         {
+            if (!ModelState.IsValid) return View(dto);
+
             var client = _httpClientFactory.CreateClient();
             var apiUrl = _configuration["ApiUrl"] + "Auth/login";
 
@@ -88,6 +90,8 @@ namespace Warehouse.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterDTO dto)
         {
+            if (!ModelState.IsValid) return View(dto);
+
             var client = _httpClientFactory.CreateClient();
             var apiUrl = _configuration["ApiUrl"] + "Auth/register";
 

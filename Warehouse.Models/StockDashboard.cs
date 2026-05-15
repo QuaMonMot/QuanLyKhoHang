@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,12 +10,23 @@ namespace Warehouse.Models
     {
         public int TotalProducts { get; set; }
 
-        public int TotalStock { get; set; }
+        public long TotalStock { get; set; }
 
         public int LowStockProducts { get; set; }
 
-        public int TotalImport { get; set; }
+        public long TotalImport { get; set; }
 
-        public int TotalExport { get; set; }
+        public long TotalExport { get; set; }
+
+        public List<ProductStatistic> ProductStats { get; set; } = new();
+    }
+
+    public class ProductStatistic
+    {
+        public string ProductName { get; set; }
+
+        public long TotalImport { get; set; }
+
+        public long TotalExport { get; set; }
     }
 }

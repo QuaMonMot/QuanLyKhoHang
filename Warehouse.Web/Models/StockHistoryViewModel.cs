@@ -1,4 +1,4 @@
-﻿namespace Warehouse.Web.Models
+namespace Warehouse.Web.Models
 {
     public class StockHistoryViewModel
     {
@@ -7,6 +7,10 @@
         public string? SKU { get; set; }
 
         public string? ProductName { get; set; }
+
+        public int SupplierId { get; set; }
+
+        public string? SupplierName { get; set; }
 
         public int Quantity { get; set; }
 

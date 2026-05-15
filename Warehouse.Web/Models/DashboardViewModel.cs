@@ -1,15 +1,17 @@
-﻿namespace Warehouse.Web.Models
+namespace Warehouse.Web.Models
 {
     public class DashboardViewModel
     {
         public int TotalProducts { get; set; }
 
-        public int TotalStock { get; set; }
+        public long TotalStock { get; set; }
 
         public int LowStockProducts { get; set; }
 
-        public int TotalImport { get; set; }
+        public long TotalImport { get; set; }
 
-        public int TotalExport { get; set; }
+        public long TotalExport { get; set; }
+
+        public List<StockReportViewModel> ProductStats { get; set; } = new();
     }
 }

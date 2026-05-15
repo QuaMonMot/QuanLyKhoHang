@@ -1,4 +1,4 @@
-﻿public class Product
+public class Product
 {
     public int ProductId { get; set; }
 
@@ -13,4 +13,5 @@
     public int MinStock { get; set; }
 
     public int SupplierId { get; set; }
+    public string? SupplierName { get; set; }
 }

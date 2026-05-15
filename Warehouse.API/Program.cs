@@ -26,8 +26,6 @@ builder.Services.AddScoped<SqlConnectionFactory>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
-builder.Services.AddScoped< ISupplierRepository, SupplierRepository>();
-builder.Services.AddScoped<IStockRepository,StockRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 

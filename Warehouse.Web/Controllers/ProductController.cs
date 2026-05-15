@@ -193,6 +193,19 @@ namespace Warehouse.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit( UpdateProductViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                // To display supplier dropdown correctly when validation fails
+                var supplierClient = _httpClientFactory.CreateClient();
+                var suppliersJson = await supplierClient.GetStringAsync(_configuration["ApiUrl"] + "Supplier");
+                var suppliers = JsonSerializer.Deserialize<List<SupplierViewModel>>(
+                    suppliersJson,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                );
+                ViewBag.Suppliers = suppliers;
+                return View(model);
+            }
+
             var client =
                 _httpClientFactory.CreateClient();
 

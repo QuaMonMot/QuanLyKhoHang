@@ -13,12 +13,13 @@
 
 <div class="section-panel">
     <div class="table-responsive table-wrapper">
-        <table class="table table-bordered table-hover align-middle mb-0">
+        <table class="table table-dark table-bordered table-hover align-middle mb-0">
             <thead class="table-danger">
                 <tr>
                     <th>ID</th>
                     <th>SKU</th>
                     <th>Tên sản phẩm</th>
+                    <th>Nhà cung cấp</th>
                     <th class="text-center">Tồn kho</th>
                     <th class="text-center">Tồn tối thiểu</th>
                 </tr>
@@ -31,6 +32,7 @@
                         <td>@item.ProductId</td>
                         <td><span class="badge bg-light text-dark border">@item.SKU</span></td>
                         <td>@item.ProductName</td>
+                        <td><span class="text-muted small">@item.SupplierName</span></td>
                         <td class="text-center">
                             <span class="badge bg-danger rounded-pill px-3 py-2">@item.Quantity</span>
                         </td>
